@@ -35,8 +35,11 @@ const main = async () => {
     if (!fs.existsSync(configFilePath))
         throw new Error(`Supplied config file path ${configFilePath} doesn't exist.`);
     const jsonConfig = JSON.parse(fs.readFileSync(configFilePath).toString());
-    core.info(jsonConfig["npm-packages"]["repos"][0]);
     for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
+        if (typeof groupConfig !== "object" || !groupConfig.repos) {
+            core.warning(`Skipping ${groupName} group as it doesn't have "repos" property`);
+            continue;
+        }
         process.env["DRY_RUN"] = "true";
         const reposToSync = groupConfig.repos.map(repo => {
             if (!~repo.indexOf("/")) {
@@ -65,6 +68,7 @@ const main = async () => {
 };
 main().catch(err => {
     core.error(err);
+    core.setFailed(err.message);
 });
 
 

@@ -21,8 +21,11 @@ const main = async () => {
     const jsonConfig: ExpectedConfig = JSON.parse(
         fs.readFileSync(configFilePath).toString()
     );
-    core.info(jsonConfig["npm-packages"]["repos"][0]);
     for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
+        if (typeof groupConfig !== "object" || !groupConfig.repos) {
+            core.warning(`Skipping ${groupName} group as it doesn't have "repos" property`)
+            continue;
+        }
         process.env["DRY_RUN"] = "true";
 
         const reposToSync = groupConfig.repos.map(repo => {
@@ -53,5 +56,6 @@ const main = async () => {
 
 main().catch(err => {
     core.error(err);
+    core.setFailed(err.message);
 });
 
