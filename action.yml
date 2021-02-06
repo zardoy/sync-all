@@ -13,5 +13,5 @@ inputs:
   # add_generated_note:
   #   description: Whether add a GENERATED comment on the top of supported files (.js, .yml) or not
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'dist/index.js'
