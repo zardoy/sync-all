@@ -28,10 +28,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const fs = __importStar(__nccwpck_require__(747));
 // Please, open an issue if you need more customization
 const main = async () => {
-    const reposFilePath = core.getInput("config_file", { required: true });
-    const jsonConfig = require(reposFilePath);
+    const configFilePath = core.getInput("config_file", { required: true });
+    if (!fs.existsSync(configFilePath))
+        throw new Error(`Supplied config file path ${configFilePath} doesn't exist.`);
+    const jsonConfig = require(configFilePath);
     core.info(jsonConfig["npm-packages"]["repos"][0]);
     // for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
     //     process.env["DRY_RUN"] = "true";
@@ -61,13 +64,10 @@ const main = async () => {
     //     await syncFiles();
     // }
 };
-try {
-    main();
-}
-catch (err) {
+main().catch(err => {
     core.error(err);
     core.setFailed(err.message);
-}
+});
 
 
 /***/ }),

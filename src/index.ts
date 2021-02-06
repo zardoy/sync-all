@@ -17,8 +17,9 @@ interface ExpectedConfig {
 
 // Please, open an issue if you need more customization
 const main = async () => {
-    const reposFilePath = core.getInput("config_file", { required: true });
-    const jsonConfig: ExpectedConfig = require(reposFilePath);
+    const configFilePath = core.getInput("config_file", { required: true });
+    if (!fs.existsSync(configFilePath)) throw new Error(`Supplied config file path ${configFilePath} doesn't exist.`);
+    const jsonConfig: ExpectedConfig = require(configFilePath);
     core.info(jsonConfig["npm-packages"]["repos"][0]);
     // for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
     //     process.env["DRY_RUN"] = "true";
@@ -50,10 +51,8 @@ const main = async () => {
     // }
 }
 
-try {
-    main();
-} catch (err) {
+main().catch(err => {
     core.error(err);
     core.setFailed(err.message);
-}
+});
 
