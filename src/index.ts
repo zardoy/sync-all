@@ -1,7 +1,6 @@
 import * as core from "@actions/core";
 import * as fs from "fs";
 //@ts-ignore
-// import { run as syncSecrets } from "../node_modules/secrets-sync-action/src/main";
 
 interface ExpectedConfig {
     [groupName: string]: {
@@ -23,34 +22,33 @@ const main = async () => {
         fs.readFileSync(configFilePath).toString()
     );
     core.info(jsonConfig["npm-packages"]["repos"][0]);
-    // for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
-    //     process.env["DRY_RUN"] = "true";
+    for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
+        process.env["DRY_RUN"] = "true";
 
-    //     const reposToSync = groupConfig.repos.map(repo => {
-    //         if (!~repo.indexOf("/")) {
-    //             repo = `${process.env.GITHUB_ACTOR}/${repo}`;
-    //         }
-    //         return repo;
-    //     });
-    //     if (groupConfig.secrets) {
-    //         //@ts-ignore
-    //         process.env["SECRETS"] = groupConfig.secrets.join("\n");
-    //         process.env["REPOSITORIES_LIST_REGEX"] = "false";
-    //         process.env["REPOSITORIES"] = reposToSync.join("\n");
-    //         // import("files-sync-action")
-    //         await syncSecrets();
-    //     }
-    //     continue;
-    //     const filesSource = groupConfig.srcRoot || `sync/${groupName}/`;
-    //     if (!fs.existsSync(filesSource)) {
-    //         core.info(`${filesSource} doesn't exist. Skipping files sync...`);
-    //         continue;
-    //     }
-    //     process.env["SRC_ROOT"] = filesSource;
-    //     process.env["FILE_PATTERNS"] = `.*`;
-    //     process.env["INPUT_TARGET_REPOS"] = reposToSync.join("\n");
-    //     await syncFiles();
-    // }
+        const reposToSync = groupConfig.repos.map(repo => {
+            if (!~repo.indexOf("/")) {
+                repo = `${process.env.GITHUB_ACTOR}/${repo}`;
+            }
+            return repo;
+        });
+        if (groupConfig.secrets) {
+            process.env["SECRETS"] = groupConfig.secrets.join("\n");
+            process.env["REPOSITORIES_LIST_REGEX"] = "false";
+            process.env["REPOSITORIES"] = reposToSync.join("\n");
+            await (await import("../node_modules/secrets-sync-action/src/main")).run();
+            // require("files-sync-action")
+        }
+        continue;
+        // const filesSource = groupConfig.srcRoot || `sync/${groupName}/`;
+        // if (!fs.existsSync(filesSource)) {
+        //     core.info(`${filesSource} doesn't exist. Skipping files sync...`);
+        //     continue;
+        // }
+        // process.env["SRC_ROOT"] = filesSource;
+        // process.env["FILE_PATTERNS"] = `.*`;
+        // process.env["INPUT_TARGET_REPOS"] = reposToSync.join("\n");
+        // await syncFiles();
+    }
 }
 
 main().catch(err => {
