@@ -17,7 +17,7 @@ interface ExpectedConfig {
 /**
  * @param inputs Do not use spaces here
  */
-const setInputValues = (inputs: { [input: string]: string | boolean; }) => {
+const setInputValues = (inputs: { [input: string]: string | boolean | number; }) => {
     Object.entries(inputs).forEach(([input, value]) => {
         process.env[`INPUT_${input.toUpperCase()}`] = value.toString();
     });
@@ -49,20 +49,21 @@ const main = async () => {
             setInputValues({
                 SECRETS: groupConfig.secrets.join("\n"),
                 REPOSITORIES_LIST_REGEX: false,
-                REPOSITORIES: reposToSync.join("\n")
+                REPOSITORIES: reposToSync.join("\n"),
+                CONCURRENCY: 10
             });
             await (await import("../node_modules/secrets-sync-action/src/main")).run();
-            // require("files-sync-action")
         }
         continue;
         // const filesSource = groupConfig.srcRoot || `sync/${groupName}/`;
         // if (!fs.existsSync(filesSource)) {
-        //     core.info(`${filesSource} doesn't exist. Skipping files sync...`);
-        //     continue;
-        // }
-        // process.env["SRC_ROOT"] = filesSource;
-        // process.env["FILE_PATTERNS"] = `.*`;
-        // process.env["INPUT_TARGET_REPOS"] = reposToSync.join("\n");
+            //     core.info(`${filesSource} doesn't exist. Skipping files sync...`);
+            //     continue;
+            // }
+            // process.env["SRC_ROOT"] = filesSource;
+            // process.env["FILE_PATTERNS"] = `.*`;
+            // process.env["INPUT_TARGET_REPOS"] = reposToSync.join("\n");
+        // require("files-sync-action")
         // await syncFiles();
     }
 }

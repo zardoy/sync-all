@@ -61,10 +61,10 @@ const main = async () => {
             setInputValues({
                 SECRETS: groupConfig.secrets.join("\n"),
                 REPOSITORIES_LIST_REGEX: false,
-                REPOSITORIES: reposToSync.join("\n")
+                REPOSITORIES: reposToSync.join("\n"),
+                CONCURRENCY: 10
             });
             await (await Promise.resolve().then(() => __importStar(__nccwpck_require__(6006)))).run();
-            // require("files-sync-action")
         }
         continue;
         // const filesSource = groupConfig.srcRoot || `sync/${groupName}/`;
@@ -75,6 +75,7 @@ const main = async () => {
         // process.env["SRC_ROOT"] = filesSource;
         // process.env["FILE_PATTERNS"] = `.*`;
         // process.env["INPUT_TARGET_REPOS"] = reposToSync.join("\n");
+        // require("files-sync-action")
         // await syncFiles();
     }
 };
