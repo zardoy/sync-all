@@ -1,7 +1,6 @@
-import core from "@actions/core";
-import fs from "fs";
+import * as core from "@actions/core";
+import * as fs from "fs";
 //@ts-ignore
-// import syncFiles from "files-sync-action";
 // import { run as syncSecrets } from "../node_modules/secrets-sync-action/src/main";
 
 interface ExpectedConfig {
@@ -21,7 +20,6 @@ const main = async () => {
     const reposFilePath = core.getInput("config_file", { required: true });
     const jsonConfig: ExpectedConfig = require(reposFilePath);
     core.info(jsonConfig["npm-packages"]["repos"][0]);
-    // return;
     // for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
     //     process.env["DRY_RUN"] = "true";
 
@@ -36,6 +34,7 @@ const main = async () => {
     //         process.env["SECRETS"] = groupConfig.secrets.join("\n");
     //         process.env["REPOSITORIES_LIST_REGEX"] = "false";
     //         process.env["REPOSITORIES"] = reposToSync.join("\n");
+    //         // import("files-sync-action")
     //         await syncSecrets();
     //     }
     //     continue;
@@ -51,4 +50,10 @@ const main = async () => {
     // }
 }
 
-main();
+try {
+    main();
+} catch (err) {
+    core.error(err);
+    core.setFailed(err.message);
+}
+
