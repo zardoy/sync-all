@@ -19,7 +19,9 @@ interface ExpectedConfig {
 const main = async () => {
     const configFilePath = core.getInput("config_file", { required: true });
     if (!fs.existsSync(configFilePath)) throw new Error(`Supplied config file path ${configFilePath} doesn't exist.`);
-    const jsonConfig: ExpectedConfig = require("./" + configFilePath);
+    const jsonConfig: ExpectedConfig = JSON.parse(
+        fs.readFileSync(configFilePath).toString()
+    );
     core.info(jsonConfig["npm-packages"]["repos"][0]);
     // for (const [groupName, groupConfig] of Object.entries(jsonConfig)) {
     //     process.env["DRY_RUN"] = "true";
