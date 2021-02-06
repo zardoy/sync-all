@@ -29,6 +29,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(5747));
+/**
+ * @param inputs Do not use spaces here
+ */
+const setInputValues = (inputs) => {
+    Object.entries(inputs).forEach(([input, value]) => {
+        process.env[`INPUT_${input.toUpperCase()}`] = value.toString();
+    });
+};
 // Please, open an issue if you need more customization
 const main = async () => {
     const configFilePath = core.getInput("config_file", { required: true });
@@ -40,7 +48,9 @@ const main = async () => {
             core.warning(`Skipping ${groupName} group as it doesn't have "repos" property`);
             continue;
         }
-        process.env["DRY_RUN"] = "true";
+        setInputValues({
+            dry_run: true
+        });
         const reposToSync = groupConfig.repos.map(repo => {
             if (!~repo.indexOf("/")) {
                 repo = `${process.env.GITHUB_ACTOR}/${repo}`;
@@ -48,9 +58,11 @@ const main = async () => {
             return repo;
         });
         if (groupConfig.secrets) {
-            process.env["SECRETS"] = groupConfig.secrets.join("\n");
-            process.env["REPOSITORIES_LIST_REGEX"] = "false";
-            process.env["REPOSITORIES"] = reposToSync.join("\n");
+            setInputValues({
+                SECRETS: groupConfig.secrets.join("\n"),
+                REPOSITORIES_LIST_REGEX: false,
+                REPOSITORIES: reposToSync.join("\n")
+            });
             await (await Promise.resolve().then(() => __importStar(__nccwpck_require__(6006)))).run();
             // require("files-sync-action")
         }

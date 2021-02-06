@@ -14,6 +14,15 @@ interface ExpectedConfig {
     }
 }
 
+/**
+ * @param inputs Do not use spaces here
+ */
+const setInputValues = (inputs: { [input: string]: string | boolean; }) => {
+    Object.entries(inputs).forEach(([input, value]) => {
+        process.env[`INPUT_${input.toUpperCase()}`] = value.toString();
+    });
+}
+
 // Please, open an issue if you need more customization
 const main = async () => {
     const configFilePath = core.getInput("config_file", { required: true });
@@ -26,7 +35,9 @@ const main = async () => {
             core.warning(`Skipping ${groupName} group as it doesn't have "repos" property`)
             continue;
         }
-        process.env["DRY_RUN"] = "true";
+        setInputValues({
+            dry_run: true
+        });
 
         const reposToSync = groupConfig.repos.map(repo => {
             if (!~repo.indexOf("/")) {
@@ -35,9 +46,11 @@ const main = async () => {
             return repo;
         });
         if (groupConfig.secrets) {
-            process.env["SECRETS"] = groupConfig.secrets.join("\n");
-            process.env["REPOSITORIES_LIST_REGEX"] = "false";
-            process.env["REPOSITORIES"] = reposToSync.join("\n");
+            setInputValues({
+                SECRETS: groupConfig.secrets.join("\n"),
+                REPOSITORIES_LIST_REGEX: false,
+                REPOSITORIES: reposToSync.join("\n")
+            });
             await (await import("../node_modules/secrets-sync-action/src/main")).run();
             // require("files-sync-action")
         }
