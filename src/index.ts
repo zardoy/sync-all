@@ -45,7 +45,7 @@ const main = async () => {
             }
             return repo;
         });
-        if (groupConfig.secrets) {
+        if (groupConfig.secrets || false) {
             setInputValues({
                 SECRETS: groupConfig.secrets.join("\n"),
                 REPOSITORIES_LIST_REGEX: false,
@@ -54,17 +54,18 @@ const main = async () => {
             });
             await (await import("../node_modules/secrets-sync-action/src/main")).run();
         }
-        continue;
-        // const filesSource = groupConfig.srcRoot || `sync/${groupName}/`;
-        // if (!fs.existsSync(filesSource)) {
-            //     core.info(`${filesSource} doesn't exist. Skipping files sync...`);
-            //     continue;
-            // }
-            // process.env["SRC_ROOT"] = filesSource;
-            // process.env["FILE_PATTERNS"] = `.*`;
-            // process.env["INPUT_TARGET_REPOS"] = reposToSync.join("\n");
-        // require("files-sync-action")
-        // await syncFiles();
+        const filesSource = groupConfig.srcRoot || `sync/${groupName}/`;
+        if (!fs.existsSync(filesSource)) {
+            core.info(`${filesSource} doesn't exist. Skipping files sync...`);
+            continue;
+        }
+        setInputValues({
+            SRC_ROOT: filesSource,
+            FILE_PATTERNS: `.*`,
+            INPUT_TARGET_REPOS: reposToSync.join("\n")
+        });
+        //@ts-ignore
+        await (await import("files-sync-action"))();
     }
 }
 
