@@ -62,7 +62,7 @@ const main = async () => {
         setInputValues({
             SRC_ROOT: filesSource,
             FILE_PATTERNS: `.*`,
-            INPUT_TARGET_REPOS: reposToSync.join("\n")
+            TARGET_REPOS: reposToSync.join("\n")
         });
         //@ts-ignore
         await (await import("files-sync-action"))();
