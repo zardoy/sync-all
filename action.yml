@@ -1,7 +1,6 @@
 name: Sync All
 description: Sync secrets & files between groupped GitHub repos
 branding:
-branding:
   color: blue
   icon: copy
 inputs:
