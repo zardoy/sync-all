@@ -93,7 +93,8 @@ const core = __importStar(__nccwpck_require__(186));
 //     }
 // }
 const main = async () => {
-    console.log(typeof core.getInput("test"), core.getInput("test"));
+    const testEnv = process.env["INPUT_TEST"];
+    console.log(typeof testEnv, testEnv);
 };
 main().catch(err => {
     core.error(err);
