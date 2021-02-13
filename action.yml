@@ -7,7 +7,6 @@ inputs:
   test:
     description: true
     required: true
-    default: 5
   # add_generated_note:
   #   description: Whether add a GENERATED comment on the top of supported files (.js, .yml) or not
 runs:
