@@ -8,4 +8,3 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: zardoy/sync-all@main
-        with:
