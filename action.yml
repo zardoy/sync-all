@@ -7,7 +7,7 @@ inputs:
   test:
     description: true
     required: false
-    default: "${{ secrets.GITHUB_ACTOR }}"
+    default: "${{ $GITHUB_ACTOR }}"
   # add_generated_note:
   #   description: Whether add a GENERATED comment on the top of supported files (.js, .yml) or not
 runs:
