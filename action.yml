@@ -4,12 +4,10 @@ branding:
   color: blue
   icon: copy
 inputs:
-  config_file:
-    description: .json file with sync config
+  test:
+    description: true
     required: true
-  github_token:
-    description: Token to use to get repos and write secrets
-    required: true
+    default: 5
   # add_generated_note:
   #   description: Whether add a GENERATED comment on the top of supported files (.js, .yml) or not
 runs:
