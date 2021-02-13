@@ -93,7 +93,7 @@ const core = __importStar(__nccwpck_require__(186));
 //     }
 // }
 const main = async () => {
-    console.log(typeof core.getInput("test"));
+    console.log(typeof core.getInput("test"), core.getInput("test"));
 };
 main().catch(err => {
     core.error(err);

@@ -70,7 +70,7 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    console.log(typeof core.getInput("test"));
+    console.log(typeof core.getInput("test"), core.getInput("test"));
 }
 
 main().catch(err => {
