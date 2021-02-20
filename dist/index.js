@@ -93,7 +93,12 @@ const core = __importStar(__nccwpck_require__(186));
 //     }
 // }
 const main = async () => {
-    throw new TypeError("Something went wrong");
+    core.startGroup("Outer group");
+    core.info("Hi!");
+    core.startGroup("Inner group");
+    core.warning("No good...");
+    core.endGroup();
+    core.error("Bye!");
 };
 main().catch(err => {
     core.setFailed(err.message);
