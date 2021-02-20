@@ -96,7 +96,6 @@ const main = async () => {
     throw new TypeError("Something went wrong");
 };
 main().catch(err => {
-    core.error(err);
     core.setFailed(err.message);
 });
 
