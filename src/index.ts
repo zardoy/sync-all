@@ -70,8 +70,7 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    const testEnv = process.env["INPUT_TEST"];
-    console.log(typeof testEnv, testEnv?.length, testEnv);
+    throw new TypeError("Something went wrong");
 };
 
 main().catch(err => {
