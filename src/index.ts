@@ -70,12 +70,7 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    core.startGroup("Outer group");
-    core.info("Hi!");
-    core.startGroup("Inner group");
-    core.warning("No good...");
-    core.endGroup();
-    core.error("Bye!");
+    console.log(process.env.GITHUB_WORKSPACE);
 };
 
 main().catch(err => {
