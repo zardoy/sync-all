@@ -1,4 +1,6 @@
 import * as core from "@actions/core";
+import execa from "execa";
+import { fdir } from "fdir";
 import * as fs from "fs";
 //@ts-ignore
 
@@ -70,10 +72,16 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    console.log(process.env.GITHUB_WORKSPACE);
+    execa("node -v", {
+        stdio: "inherit"
+    });
+    const paths = await new fdir()
+        .withBasePath()
+        .crawl(process.env.GITHUB_WORKSPACE!)
+        .withPromise();
+    console.log(paths);
 };
 
 main().catch(err => {
     core.setFailed(err.message);
 });
-

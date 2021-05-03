@@ -18,6 +18,8 @@
     },
     "dependencies": {
         "@actions/core": "^1.2.6",
+        "execa": "^5.0.0",
+        "fdir": "^5.0.0",
         "files-sync-action": "https://github.com/adrianjost/files-sync-action",
         "secrets-sync-action": "https://github.com/google/secrets-sync-action"
     }
