@@ -72,9 +72,7 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    execa("node -v", {
-        stdio: "inherit"
-    });
+    console.log(process.versions);
     const paths = await new fdir()
         .withBasePath()
         .crawl(process.env.GITHUB_WORKSPACE!)
