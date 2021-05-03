@@ -93,12 +93,7 @@ const core = __importStar(__nccwpck_require__(186));
 //     }
 // }
 const main = async () => {
-    core.startGroup("Outer group");
-    core.info("Hi!");
-    core.startGroup("Inner group");
-    core.warning("No good...");
-    core.endGroup();
-    core.error("Bye!");
+    console.log(process.env.GITHUB_WORKSPACE);
 };
 main().catch(err => {
     core.setFailed(err.message);
