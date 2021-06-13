@@ -73,7 +73,8 @@ import * as fs from "fs";
 
 const main = async () => {
     console.log(process.cwd());
-    console.log(process.env.GITHUB_WORKSPACE);
+    console.log(__dirname);
+    console.log(fs.readdirSync(process.cwd()));
 };
 
 main().catch(err => {

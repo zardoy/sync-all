@@ -28,6 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
+const fs = __importStar(__nccwpck_require__(747));
 //@ts-ignore
 // interface ExpectedConfig {
 //     [groupName: string]: {
@@ -94,7 +95,8 @@ const core = __importStar(__nccwpck_require__(186));
 // }
 const main = async () => {
     console.log(process.cwd());
-    console.log(process.env.GITHUB_WORKSPACE);
+    console.log(__dirname);
+    console.log(fs.readdirSync(process.cwd()));
 };
 main().catch(err => {
     core.setFailed(err.message);
