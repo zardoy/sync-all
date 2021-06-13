@@ -1,11 +1,11 @@
 module.exports =
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 936:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
-"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -28,7 +28,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const fdir_1 = __nccwpck_require__(504);
 //@ts-ignore
 // interface ExpectedConfig {
 //     [groupName: string]: {
@@ -94,12 +93,8 @@ const fdir_1 = __nccwpck_require__(504);
 //     }
 // }
 const main = async () => {
-    console.log(process.versions);
-    const paths = await new fdir_1.fdir()
-        .withBasePath()
-        .crawl(process.env.GITHUB_WORKSPACE)
-        .withPromise();
-    console.log(paths);
+    console.log(process.cwd);
+    console.log(process.env.GITHUB_WORKSPACE);
 };
 main().catch(err => {
     core.setFailed(err.message);
@@ -111,7 +106,6 @@ main().catch(err => {
 /***/ 351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
-"use strict";
 
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
@@ -197,7 +191,6 @@ function escapeProperty(s) {
 /***/ 186:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
-"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -442,7 +435,6 @@ exports.getState = getState;
 /***/ 717:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
-"use strict";
 
 // For internal use, subject to change.
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -478,7 +470,6 @@ exports.issueCommand = issueCommand;
 /***/ 278:
 /***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -501,574 +492,9 @@ exports.toCommandValue = toCommandValue;
 
 /***/ }),
 
-/***/ 504:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-module.exports.fdir = __nccwpck_require__(533);
-
-
-/***/ }),
-
-/***/ 392:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { readdir } = __nccwpck_require__(242);
-const { makeWalkerFunctions, readdirOpts } = __nccwpck_require__(568);
-
-function promise(dir, options) {
-  return new Promise((resolve, reject) => {
-    callback(dir, options, (err, output) => {
-      if (err) return reject(err);
-      resolve(output);
-    });
-  });
-}
-
-function callback(dirPath, options, callback) {
-  const { init, walkSingleDir } = makeWalkerFunctions();
-
-  const { state, callbackInvoker, dir } = init(dirPath, options, callback);
-
-  function walk(state, dir, currentDepth, callback) {
-    if (currentDepth < 0) {
-      --state.queue;
-      return;
-    }
-    readdir(dir, readdirOpts, function(error, dirents) {
-      if (error) {
-        --state.queue;
-        callback(error, state);
-        return;
-      }
-  
-      walkSingleDir(walk, state, dir, dirents, currentDepth, callback);
-      if (--state.queue < 0) callback(null, state);
-    });
-  }
-
-  walk(state, dir, options.maxDepth, callbackInvoker);
-}
-
-module.exports = { promise, callback };
-
-
-/***/ }),
-
-/***/ 20:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { sep } = __nccwpck_require__(622);
-
-/* GET ARRAY */
-module.exports.getArray = function(state) {
-  return state.paths;
-};
-module.exports.getArrayGroup = function() {
-  return [""].slice(0, 0);
-};
-
-/** PUSH FILE */
-module.exports.pushFileFilterAndCount = function(filters) {
-  return function(filename, _files, _dir, state) {
-    if (filters.every((filter) => filter(filename, false)))
-      state.counts.files++;
-  };
-};
-
-module.exports.pushFileFilter = function(filters) {
-  return function(filename, files) {
-    if (filters.every((filter) => filter(filename, false)))
-      files.push(filename);
-  };
-};
-
-module.exports.pushFileCount = function(_filename, _files, _dir, state) {
-  state.counts.files++;
-};
-module.exports.pushFile = function(filename, files) {
-  files.push(filename);
-};
-
-/** PUSH DIR */
-module.exports.pushDir = function(dirPath, paths) {
-  paths.push(dirPath);
-};
-
-module.exports.pushDirFilter = function(filters) {
-  return function(dirPath, paths) {
-    if (filters.every((filter) => filter(dirPath, true))) {
-      paths.push(dirPath);
-    }
-  };
-};
-
-/** JOIN PATH */
-module.exports.joinPathWithBasePath = function(filename, dir) {
-  return `${dir}${sep}${filename}`;
-};
-module.exports.joinPath = function(filename) {
-  return filename;
-};
-
-/** WALK DIR */
-module.exports.walkDirExclude = function(exclude) {
-  return function(walk, state, path, dir, currentDepth, callback) {
-    if (!exclude(dir, path)) {
-      module.exports.walkDir(walk, state, path, dir, currentDepth, callback);
-    }
-  };
-};
-
-module.exports.walkDir = function(
-  walk,
-  state,
-  path,
-  _dir,
-  currentDepth,
-  callback
-) {
-  state.queue++;
-  state.counts.dirs++;
-  walk(state, path, currentDepth, callback);
-};
-
-/** GROUP FILES */
-module.exports.groupFiles = function(dir, files, state) {
-  state.counts.files += files.length;
-  state.paths.push({ dir, files });
-};
-module.exports.empty = function() {};
-
-/** CALLBACK INVOKER */
-module.exports.callbackInvokerOnlyCountsSync = function(state) {
-  return state.counts;
-};
-module.exports.callbackInvokerDefaultSync = function(state) {
-  return state.paths;
-};
-
-module.exports.callbackInvokerOnlyCountsAsync = callbackInvokerBuilder(
-  "counts"
-);
-module.exports.callbackInvokerDefaultAsync = callbackInvokerBuilder("paths");
-
-function report(err, callback, output, suppressErrors) {
-  if (err && !suppressErrors) callback(err, null);
-  else callback(null, output);
-}
-
-function callbackInvokerBuilder(output) {
-  return function(err, state) {
-    report(err, state.callback, state[output], state.options.suppressErrors);
-  };
-}
-
-
-/***/ }),
-
-/***/ 568:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { sep, resolve: pathResolve } = __nccwpck_require__(622);
-const { cleanPath } = __nccwpck_require__(837);
-const fns = __nccwpck_require__(20);
-const readdirOpts = { withFileTypes: true };
-
-module.exports = { makeWalkerFunctions, readdirOpts };
-
-// We cannot simply export `init` and `walkSingleDir` directly. We need to rebuild them on every call.
-// Otherwise, the functions setup by `buildFunctions` can be overwritten if a new concurrent async
-// call is performed while walking is still happening from another call.
-function makeWalkerFunctions() {
-  function init(dir, options, callback, isSync) {
-    if (options.resolvePaths) dir = pathResolve(dir);
-    if (options.normalizePath) dir = cleanPath(dir);
-
-    /* We use a local state object instead of direct global variables so that each function
-     * execution is independent of each other.
-     */
-    const state = {
-      // Perf: we explicitly tell the compiler to optimize for String arrays
-      paths: [""].slice(0, 0),
-      queue: 0,
-      counts: { files: 0, dirs: 0 },
-      options,
-      callback,
-    };
-
-    /*
-     * Perf: We conditionally change functions according to options. This gives a slight
-     * performance boost. Since these functions are so small, they are automatically inlined
-     * by the engine so there's no function call overhead (in most cases).
-     */
-    buildFunctions(options, isSync);
-
-    return { state, callbackInvoker, dir };
-  }
-
-  function walkSingleDir(walk, state, dir, dirents, currentDepth, callback) {
-    pushDir(dir, state.paths);
-    // in cases where we have / as path
-    if (dir === sep) dir = "";
-
-    const files = getArray(state);
-
-    for (var i = 0; i < dirents.length; ++i) {
-      const dirent = dirents[i];
-
-      if (dirent.isFile()) {
-        const filename = joinPath(dirent.name, dir);
-        pushFile(filename, files, dir, state);
-      } else if (dirent.isDirectory()) {
-        let dirPath = `${dir}${sep}${dirent.name}`;
-        walkDir(walk, state, dirPath, dirent.name, currentDepth - 1, callback);
-      }
-    }
-
-    groupFiles(dir, files, state);
-  }
-
-  function buildFunctions(options, isSync) {
-    const {
-      filters,
-      onlyCountsVar,
-      includeBasePath,
-      includeDirs,
-      groupVar,
-      excludeFn,
-      excludeFiles,
-    } = options;
-
-    buildPushFile(filters, onlyCountsVar, excludeFiles);
-
-    pushDir = includeDirs
-      ? filters.length
-        ? fns.pushDirFilter(filters)
-        : fns.pushDir
-      : fns.empty;
-
-    // build function for joining paths
-    joinPath = includeBasePath ? fns.joinPathWithBasePath : fns.joinPath;
-
-    // build recursive walk directory function
-    walkDir = excludeFn ? fns.walkDirExclude(excludeFn) : fns.walkDir;
-
-    // build groupFiles function for grouping files
-    groupFiles = groupVar ? fns.groupFiles : fns.empty;
-    getArray = groupVar ? fns.getArrayGroup : fns.getArray;
-
-    buildCallbackInvoker(onlyCountsVar, isSync);
-  }
-
-  function buildPushFile(filters, onlyCountsVar, excludeFiles) {
-    if (excludeFiles) {
-      pushFile = fns.empty;
-      return;
-    }
-
-    if (filters.length && onlyCountsVar) {
-      pushFile = fns.pushFileFilterAndCount(filters);
-    } else if (filters.length) {
-      pushFile = fns.pushFileFilter(filters);
-    } else if (onlyCountsVar) {
-      pushFile = fns.pushFileCount;
-    } else {
-      pushFile = fns.pushFile;
-    }
-  }
-
-  function buildCallbackInvoker(onlyCountsVar, isSync) {
-    if (onlyCountsVar) {
-      callbackInvoker = isSync
-        ? fns.callbackInvokerOnlyCountsSync
-        : fns.callbackInvokerOnlyCountsAsync;
-    } else {
-      callbackInvoker = isSync
-        ? fns.callbackInvokerDefaultSync
-        : fns.callbackInvokerDefaultAsync;
-    }
-  }
-
-  /* Dummies that will be filled later conditionally based on options */
-  var pushFile = fns.empty;
-  var pushDir = fns.empty;
-  var walkDir = fns.empty;
-  var joinPath = fns.empty;
-  var groupFiles = fns.empty;
-  var callbackInvoker = fns.empty;
-  var getArray = fns.empty;
-
-  return { init, walkSingleDir };
-}
-
-
-/***/ }),
-
-/***/ 941:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { readdirSync } = __nccwpck_require__(242);
-const { makeWalkerFunctions, readdirOpts } = __nccwpck_require__(568);
-
-// For sync usage, we can reuse the same walker functions, because
-// there will not be concurrent calls overwriting the 'built functions'
-// in the middle of everything.
-const { init, walkSingleDir } = makeWalkerFunctions();
-
-function sync(dirPath, options) {
-  const { state, callbackInvoker, dir } = init(dirPath, options, null, true);
-  walk(state, dir, options.maxDepth);
-  return callbackInvoker(state);
-}
-
-function walk(state, dir, currentDepth) {
-  if (currentDepth < 0) {
-    return;
-  }
-  try {
-    const dirents = readdirSync(dir, readdirOpts);
-    walkSingleDir(walk, state, dir, dirents, currentDepth);
-  } catch (e) {
-    if (!state.options.suppressErrors) throw e;
-  }
-}
-
-module.exports = sync;
-
-
-/***/ }),
-
-/***/ 418:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { promise, callback } = __nccwpck_require__(392);
-const sync = __nccwpck_require__(941);
-
-function APIBuilder(path, options) {
-  this.dir = path;
-  this.options = options;
-}
-
-APIBuilder.prototype.withPromise = function() {
-  return promise(this.dir, this.options);
-};
-
-APIBuilder.prototype.withCallback = function(cb) {
-  callback(this.dir, this.options, cb);
-};
-
-APIBuilder.prototype.sync = function() {
-  return sync(this.dir, this.options);
-};
-
-module.exports = APIBuilder;
-
-
-/***/ }),
-
-/***/ 533:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const APIBuilder = __nccwpck_require__(418);
-var pm = null;
-var globCache = null;
-/* istanbul ignore next */
-try {
-  require.resolve("picomatch");
-  pm = __nccwpck_require__(939);
-  globCache = {};
-} catch (_e) {
-  // do nothing
-}
-
-function Builder() {
-  this.maxDepth = Infinity;
-  this.suppressErrors = true;
-  this.filters = [];
-}
-
-Builder.prototype.crawl = function(path) {
-  return new APIBuilder(path, this);
-};
-
-Builder.prototype.crawlWithOptions = function(path, options) {
-  if (!options.maxDepth) options.maxDepth = Infinity;
-  options.groupVar = options.group;
-  options.onlyCountsVar = options.onlyCounts;
-  options.excludeFn = options.exclude;
-  options.filters = options.filters || [];
-
-  if (options.excludeFiles) {
-    options.includeDirs = true;
-  }
-
-  return new APIBuilder(path, options);
-};
-
-Builder.prototype.withBasePath = function() {
-  this.includeBasePath = true;
-  return this;
-};
-
-Builder.prototype.withDirs = function() {
-  this.includeDirs = true;
-  return this;
-};
-
-Builder.prototype.withMaxDepth = function(depth) {
-  this.maxDepth = depth;
-  return this;
-};
-
-Builder.prototype.withFullPaths = function() {
-  this.resolvePaths = true;
-  this.includeBasePath = true;
-  return this;
-};
-
-Builder.prototype.withErrors = function() {
-  this.suppressErrors = false;
-  return this;
-};
-
-Builder.prototype.group = function() {
-  this.groupVar = true;
-  return this;
-};
-
-Builder.prototype.normalize = function() {
-  this.normalizePath = true;
-  return this;
-};
-
-Builder.prototype.filter = function(filterFn) {
-  this.filters.push(filterFn);
-  return this;
-};
-
-Builder.prototype.onlyDirs = function() {
-  this.excludeFiles = true;
-  this.includeDirs = true;
-  return this;
-};
-
-Builder.prototype.glob = function(...patterns) {
-  /* istanbul ignore next */
-  if (!pm) {
-    throw new Error(
-      `Please install picomatch: "npm i picomatch" to use glob matching.`
-    );
-  }
-  var isMatch = globCache[patterns.join("\0")];
-  if (!isMatch) {
-    isMatch = pm(patterns, { dot: true });
-    globCache[patterns.join("\0")] = isMatch;
-  }
-  this.filters.push((path) => isMatch(path));
-  return this;
-};
-
-Builder.prototype.exclude = function(excludeFn) {
-  this.excludeFn = excludeFn;
-  return this;
-};
-
-Builder.prototype.onlyCounts = function() {
-  this.onlyCountsVar = true;
-  return this;
-};
-
-module.exports = Builder;
-
-
-/***/ }),
-
-/***/ 242:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { lstat, lstatSync, readdir, readdirSync, Dirent } = __nccwpck_require__(747);
-const { sep } = __nccwpck_require__(622);
-
-/* istanbul ignore next */
-if (!Dirent) {
-  module.exports.readdir = function(dir, _, callback) {
-    readdir(dir, (err, files) => {
-      if (err) return process.nextTick(callback, err, null);
-      if (!files.length) return process.nextTick(callback, null, []);
-
-      let dirents = [];
-
-      for (let i = 0; i < files.length; ++i) {
-        let name = files[i];
-        let path = `${dir}${sep}${name}`;
-        lstat(path, (err, stat) => {
-          if (err) return process.nextTick(callback, err, null);
-          dirents[dirents.length] = getDirent(name, stat);
-          if (dirents.length === files.length) {
-            process.nextTick(callback, null, dirents);
-          }
-        });
-      }
-    });
-  };
-
-  module.exports.readdirSync = function(dir) {
-    const files = readdirSync(dir);
-    let dirents = [];
-    for (let i = 0; i < files.length; ++i) {
-      let name = files[i];
-      let path = `${dir}${sep}${name}`;
-      const stat = lstatSync(path);
-      dirents[dirents.length] = getDirent(name, stat);
-    }
-    return dirents;
-  };
-
-  function getDirent(name, stat) {
-    return {
-      name,
-      isFile: () => stat.isFile(),
-      isDirectory: () => stat.isDirectory(),
-    };
-  }
-} else {
-  module.exports = { readdirSync, readdir };
-}
-
-
-/***/ }),
-
-/***/ 837:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const { sep, normalize } = __nccwpck_require__(622);
-
-function cleanPath(dirPath) {
-  let normalized = normalize(dirPath);
-
-  // to account for / path
-  if (normalized.length > 1 && normalized[normalized.length - 1] === sep)
-    normalized = normalized.substring(0, normalized.length - 1);
-  return normalized;
-}
-
-module.exports = { cleanPath };
-
-
-/***/ }),
-
-/***/ 939:
-/***/ ((module) => {
-
-module.exports = eval("require")("picomatch");
-
-
-/***/ }),
-
 /***/ 747:
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("fs");;
 
 /***/ }),
@@ -1076,7 +502,6 @@ module.exports = require("fs");;
 /***/ 87:
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("os");;
 
 /***/ }),
@@ -1084,7 +509,6 @@ module.exports = require("os");;
 /***/ 622:
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("path");;
 
 /***/ })
