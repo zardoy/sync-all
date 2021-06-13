@@ -72,12 +72,8 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    console.log(process.versions);
-    const paths = await new fdir()
-        .withBasePath()
-        .crawl(process.env.GITHUB_WORKSPACE!)
-        .withPromise();
-    console.log(paths);
+    console.log(process.cwd);
+    console.log(process.env.GITHUB_WORKSPACE);
 };
 
 main().catch(err => {
