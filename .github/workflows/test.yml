@@ -7,7 +7,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          path: ./test
+      # - uses: actions/checkout@v2
+      #   with:
+      #     path: ./test
       - uses: zardoy/sync-all@main
