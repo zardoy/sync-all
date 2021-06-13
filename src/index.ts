@@ -72,7 +72,7 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    console.log(process.cwd);
+    console.log(process.cwd());
     console.log(process.env.GITHUB_WORKSPACE);
 };
 
