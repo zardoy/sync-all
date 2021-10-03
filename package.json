@@ -1,6 +1,6 @@
 {
     "name": "sync-all",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "dist-temp/index.js",
     "repository": "https://github.com/zardoy/sync-all.git",
     "author": "Vitaly Turovsky <vital2580@icloud.com>",
