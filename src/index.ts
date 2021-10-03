@@ -1,7 +1,5 @@
-import * as core from "@actions/core";
-import execa from "execa";
-import { fdir } from "fdir";
-import * as fs from "fs";
+import * as core from '@actions/core'
+import * as fs from 'fs'
 //@ts-ignore
 
 // interface ExpectedConfig {
@@ -72,11 +70,11 @@ import * as fs from "fs";
 // }
 
 const main = async () => {
-    console.log(process.cwd());
-    console.log(__dirname);
-    console.log(fs.readdirSync(process.cwd()));
-};
+    console.log(process.cwd())
+    console.log(__dirname)
+    console.log(fs.readdirSync(process.cwd()))
+}
 
 main().catch(err => {
-    core.setFailed(err.message);
-});
+    core.setFailed(err.message)
+})

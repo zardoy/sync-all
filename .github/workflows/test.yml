@@ -10,4 +10,5 @@ jobs:
       # - uses: actions/checkout@v2
       #   with:
       #     path: ./test
-      - uses: zardoy/sync-all@main
+      - run: echo ${{ github.base_ref }}
+      # - uses: zardoy/sync-all@main
