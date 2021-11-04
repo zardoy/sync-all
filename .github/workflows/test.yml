@@ -10,8 +10,8 @@ jobs:
       # - uses: actions/checkout@v2
       #   with:
       #     path: ./test
-      - name: Dump Github context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-      # - uses: zardoy/sync-all@main
+      # - name: Dump Github context
+      #   run: echo "$GITHUB_CONTEXT"
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJSON(github) }}
+      - uses: zardoy/sync-all@main

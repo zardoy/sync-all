@@ -70,9 +70,7 @@ import * as fs from 'fs'
 // }
 
 const main = async () => {
-    console.log(process.cwd())
-    console.log(__dirname)
-    console.log(fs.readdirSync(process.cwd()))
+    console.log(process.env.PATH)
 }
 
 main().catch(err => {
