@@ -2,7 +2,7 @@ import { execSync } from 'child_process'
 import { endGroup, startGroup } from '@actions/core'
 import execa from 'execa'
 startGroup('output')
-console.log(execSync('pnpm -v'))
-console.log(await execa('pnpm', ['-v']))
+execSync('pnpm -v', { stdio: 'inherit' })
+await execa('pnpm', ['-v'], { stdin: 'inherit' })
 // console.log(process.env.PATH.split(':'))
 endGroup()
