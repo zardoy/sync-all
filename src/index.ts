@@ -70,6 +70,7 @@ import * as fs from 'fs'
 // }
 
 const main = async () => {
+    console.log('path')
     console.log(process.env.PATH)
 }
 
